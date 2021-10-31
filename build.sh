@@ -31,6 +31,14 @@ function mac() {
   sudo ip netns exec "${param[1]}" ip link set dev "${param[2]}" address "${param[3]}"
 }
 
+function dump() {
+  sudo ip netns exec "${param[1]}" tcpdump -tnel -i "${param[2]}" icmp
+}
+
+function pin() {
+  sudo ip netns exec "${param[1]}" ping -c 3 "${param[2]}"
+}
+
 for OPT in "$@"; do
   param+=("$OPT")
 done
@@ -56,6 +64,12 @@ case "${param[0]}" in
     ;;
 'mac')
     mac
+    ;;
+'dump')
+    dump
+    ;;
+'pin')
+    pin
     ;;
 *)
     echo "[ERROR] $PROGNAME: illegal subcommand -- '$(echo ${param[0]})'"
