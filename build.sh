@@ -27,16 +27,28 @@ function ip() {
   sudo ip netns exec "${param[1]}" ip address add "${param[2]}" dev "${param[3]}"
 }
 
+function route() {
+  sudo ip netns exec "${param[1]}" ip route add "${param[2]}" via "${param[3]}"
+}
+
+function forward() {
+  sudo ip netns exec "${param[1]}" sysctl net.ipv4.ip_forward=1
+}
+
 function mac() {
   sudo ip netns exec "${param[1]}" ip link set dev "${param[2]}" address "${param[3]}"
 }
 
 function dump() {
-  sudo ip netns exec "${param[1]}" tcpdump -tnel -i "${param[2]}" icmp
+  sudo ip netns exec "${param[1]}" tcpdump -tnel -i "${param[2]}" icmp or arp
 }
 
 function pin() {
   sudo ip netns exec "${param[1]}" ping -c 3 "${param[2]}"
+}
+
+function nefl() {
+  sudo ip netns exec "${param[1]}" ip neigh flush all
 }
 
 for OPT in "$@"; do
@@ -70,6 +82,15 @@ case "${param[0]}" in
     ;;
 'pin')
     pin
+    ;;
+'nefl')
+    nefl
+    ;;
+'route')
+    route
+    ;;
+'forward')
+    forward
     ;;
 *)
     echo "[ERROR] $PROGNAME: illegal subcommand -- '$(echo ${param[0]})'"
