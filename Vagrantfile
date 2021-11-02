@@ -70,17 +70,17 @@ Vagrant.configure("2") do |config|
     coreutils \
     grep \
     iproute2 \
-    iputilsping \
+    iputils-ping \
     traceroute \
     tcpdump \
-    bind9dnsutils \
-    dnsmasqbase \
-    netcatopenbsd \
+    bind9-dnsutils \
+    dnsmasq-base \
+    netcat-openbsd \
     python3 \
     curl \
     wget \
     iptables \
     procps \
-    iscdhcpclient
+    isc-dhcp-client
   SHELL
 end

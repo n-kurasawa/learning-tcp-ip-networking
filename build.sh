@@ -51,6 +51,14 @@ function nefl() {
   sudo ip netns exec "${param[1]}" ip neigh flush all
 }
 
+function dnsmasq() {
+  sudo ip netns exec server dnsmasq --dhcp-range=192.0.2.100,192.0.2.200,255.255.255.0 \
+    --interface=s-veth0 \
+    --port 0 \
+    --no-resolv \
+    --no-daemon
+}
+
 for OPT in "$@"; do
   param+=("$OPT")
 done
@@ -91,6 +99,9 @@ case "${param[0]}" in
     ;;
 'forward')
     forward
+    ;;
+'dnsmasq')
+    dnsmasq
     ;;
 *)
     echo "[ERROR] $PROGNAME: illegal subcommand -- '$(echo ${param[0]})'"
