@@ -59,6 +59,24 @@ function dnsmasq() {
     --no-daemon
 }
 
+function snat() {
+  sudo ip netns exec router iptables -t nat \
+    -A POSTROUTING \
+    -s 192.0.2.0/24 \
+    -o gw-veth1 \
+    -j MASQUERADE
+}
+
+function dnat() {
+  sudo ip netns exec router iptables -t nat \
+    -A PREROUTING \
+    -p tcp \
+    --dport 54321 \
+    -d 203.0.113.254 \
+    -j DNAT \
+    --to-destination 192.0.2.1
+}
+
 for OPT in "$@"; do
   param+=("$OPT")
 done
@@ -102,6 +120,12 @@ case "${param[0]}" in
     ;;
 'dnsmasq')
     dnsmasq
+    ;;
+'snat')
+    snat
+    ;;
+'dnat')
+    dnat
     ;;
 *)
     echo "[ERROR] $PROGNAME: illegal subcommand -- '$(echo ${param[0]})'"
